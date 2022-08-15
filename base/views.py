@@ -117,10 +117,7 @@ def createRoom(request):
             name = request.POST.get('name'),
             description = request.POST.get('description'),
         )
-        #if form.is_valid():
-         #   room = form.save(commit=False)
-         #   room.host = request.user
-         #   room.save
+        
         return redirect('home')
     context = {'form': form, 'topics': topics}
     return render(request, 'base/room_form.html', context)
@@ -137,9 +134,9 @@ def updateRoom(request, pk):
     if request.method == 'POST':
         topic_name = request.POST.get('topic')
         topic, created = Topic.objects.get_or_create(name=topic_name)
-        room.name = request.POSt.get('name')
+        room.name = request.POST.get('name')
         room.topic = topic
-        room.description = request.POSt.get('description')
+        room.description = request.POST.get('description')
         room.save
         return redirect('home')
 
@@ -177,8 +174,8 @@ def updateUser(request):
     user = request.user
     form = UserForm(instance=user)
 
-    if request.methos == 'POST':
-        form = UserForm(request.Post, instance=user)
+    if request.method == 'POST':
+        form = UserForm(request.POST, instance=user)
         if form.is_valid():
             form.save()
             return redirect('user-profile', pk=user.id)
@@ -187,7 +184,7 @@ def updateUser(request):
 
 def topicsPage(request):
     q = request.GET.get('q') if request.GET.get('q') != None else ''
-    topics = Topic.objects.filter('name__icontains=q')
+    topics = Topic.objects.filter(name__icontains=q)
     return render(request, 'base/topics.html', {'topics': topics})
 
 
